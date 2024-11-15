@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         GGH
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.7
 // @description  Intégration d'un visuel BBHien à l'infâme GH.
 // @author       Eliam
 // @icon         https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_radius_mk2.gif
 // @match        https://gest-hordes2.eragaming.fr/carte/*
+// @updateURL    https://github.com/Croaaa/GGH/raw/main/GGH.user.js
+// @downloadURL  https://github.com/Croaaa/GGH/raw/main/GGH.user.js
 // @grant        none
 // ==/UserScript==
 

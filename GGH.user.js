@@ -471,9 +471,9 @@
         }
 
         const paramsObserver = new MutationObserver((mutationsList) => {
-            mutationsList.forEach((mutation) => {
-                console.log('[OBSERVED] Mutation detected in parameters:', mutation);
-            });
+            //mutationsList.forEach((mutation) => {
+            //    console.log('[OBSERVED] Mutation detected in parameters:', mutation);
+            //});
             console.log('[OBSERVED] Parameters visibility or structure changed');
             attachEventListeners();
         });

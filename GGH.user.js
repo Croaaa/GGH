@@ -1,33 +1,21 @@
 // ==UserScript==
 // @name         GGH
 // @namespace    http://tampermonkey.net/
-// @version      1.7
+// @version      1.8
 // @description  Intégration d'un visuel BBHien à l'infâme GH.
 // @author       Eliam
 // @icon         https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_radius_mk2.gif
-// @match        https://gest-hordes2.eragaming.fr/carte/*
+// @match        https://gest-hordes2.eragaming.fr/*
 // @updateURL    https://github.com/Croaaa/GGH/raw/main/GGH.user.js
 // @downloadURL  https://github.com/Croaaa/GGH/raw/main/GGH.user.js
 // @grant        none
+// @run-at       document-idle
 // ==/UserScript==
 
 (function () {
     'use strict';
 
     let backgroundAdded = false;
-
-    // Retrieves the map ID from the current URL.
-    // The map ID is extracted as the last part of the path.
-    function getMapId() {
-        const urlParts = window.location.pathname.split('/');
-        return urlParts[urlParts.length - 1];
-    }
-
-    // Applies a given set of CSS styles to an HTML element.
-    // This helps in dynamically styling elements on the page.
-    function applyStyles(element, styles) {
-        Object.assign(element.style, styles);
-    }
 
     // Adds a custom background to the map element.
     // The background is only added once to avoid redundancy.
@@ -42,6 +30,60 @@
         } else if (backgroundAdded) {
             console.log('[SKIPPED] Background already added');
         }
+    }
+
+    // Observes the map for changes and triggers script modifications when the map is loaded.
+    // Adds background styles once the map has finished loading.
+    function observeMap() {
+        const observer = new MutationObserver(() => {
+            if (document.querySelector('.background_carte_color')) {
+                console.log('[MAP LOADED] Starting script modifications...');
+                addBackground();
+                observer.disconnect();
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // Initializes the script only if the current URL contains the "carte" keyword.
+    // Checks the URL and starts observing the map if it matches the criteria.
+    function init() {
+        if (!window.location.href.includes('carte')) {
+            console.log('URL does not match "carte". Script not running.');
+            return;
+        }
+
+        console.log('URL contains "carte". Running script...');
+        observeMap();
+    }
+
+    // Monitors URL changes and re-initializes the script when navigating to a different page.
+    // Ensures the script runs again after a URL change within the same session.
+    function observeURLChanges() {
+        let currentURL = window.location.href;
+
+        const urlObserver = new MutationObserver(() => {
+            if (currentURL !== window.location.href) {
+                currentURL = window.location.href;
+                console.log(`[URL CHANGED] New URL: ${currentURL}`);
+                init();
+            }
+        });
+
+        urlObserver.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // Retrieves the map ID from the current URL.
+    // The map ID is extracted as the last part of the path.
+    function getMapId() {
+        const urlParts = window.location.pathname.split('/');
+        return urlParts[urlParts.length - 1];
+    }
+
+    // Applies a given set of CSS styles to an HTML element.
+    // This helps in dynamically styling elements on the page.
+    function applyStyles(element, styles) {
+        Object.assign(element.style, styles);
     }
 
     // Removes the xlink:href attribute from specific SVG elements.
@@ -560,7 +602,7 @@
 
     // Observes the map during the page load to ensure required elements are loaded.
     // Disconnects the observer after successfully detecting the map.
-    function init() {
+    function initOld() {
         const observer = new MutationObserver(() => {
             if (document.querySelector('.background_carte_color')) {
                 addBackground();
@@ -571,6 +613,7 @@
 
         observer.observe(document.body, { childList: true, subtree: true });
     }
-
+    observeURLChanges();
     init();
+    //initOld();
 })();

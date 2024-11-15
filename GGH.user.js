@@ -5,8 +5,6 @@
 // @description  Intégration d'un visuel BBHien à l'infâme GH.
 // @author       Eliam
 // @match        https://gest-hordes2.eragaming.fr/carte/*
-// @updateURL    https://github.com/Croaaa/GGH/raw/main/GGH.user.js
-// @downloadURL  https://github.com/Croaaa/GGH/raw/main/GGH.user.js
 // @grant        none
 // ==/UserScript==
 
@@ -15,15 +13,21 @@
 
     let backgroundAdded = false;
 
+    // Retrieves the map ID from the current URL.
+    // The map ID is extracted as the last part of the path.
     function getMapId() {
         const urlParts = window.location.pathname.split('/');
         return urlParts[urlParts.length - 1];
     }
 
+    // Applies a given set of CSS styles to an HTML element.
+    // This helps in dynamically styling elements on the page.
     function applyStyles(element, styles) {
         Object.assign(element.style, styles);
     }
 
+    // Adds a custom background to the map element.
+    // The background is only added once to avoid redundancy.
     function addBackground() {
         const carteElement = document.querySelector('.background_carte_color');
         if (carteElement && !backgroundAdded) {
@@ -37,6 +41,8 @@
         }
     }
 
+    // Removes the xlink:href attribute from specific SVG elements.
+    // This avoids rendering unwanted linked images or symbols.
     function removeUseHref() {
         const svgElements = document.querySelectorAll('svg.camp.planJaune.gdCarte, svg.camp.planBleu.gdCarte');
         svgElements.forEach(svg => {
@@ -48,6 +54,8 @@
         console.log('[EXECUTED] removeUseHref');
     }
 
+    // Manages map cells that contain citizens by applying specific styles.
+    // Highlights cells and ensures citizen visibility based on user settings.
     function manageCitizenCases() {
         console.log('[EXECUTED] manageCitizenCases');
         const paramCitizens = document.querySelector('#param_citoyensVille');
@@ -74,6 +82,8 @@
         applyCitizenColors();
     }
 
+    // Handles map cells with zombies, displaying zombie counts and icons.
+    // Dynamically creates and appends elements for visualization.
     function manageZombieCases() {
         console.log('[EXECUTED] manageZombieCases');
         const paramZombies = document.querySelector('#param_zombie');
@@ -147,6 +157,8 @@
         });
     }
 
+    // Removes the "danger" class from specific map cells.
+    // Ensures that citizen cells are not visually obstructed by danger styles.
     function removeDangerClass() {
         console.log('[EXECUTED] removeDangerClass');
 
@@ -169,6 +181,8 @@
         });
     }
 
+    // Reorganizes elements within citizen divs for better visual clarity.
+    // Moves the SVG icons before the span containing the citizen count.
     function invertCitizenDivs() {
         console.log('[EXECUTED] invertCitizenDivs');
         const citoyensVilleDivs = document.querySelectorAll('.citoyensVilleDiv');
@@ -202,6 +216,8 @@
         });
     }
 
+    // Saves the data of citizens present on the map to localStorage.
+    // Each cell's coordinates and citizen count are stored by map ID.
     function saveCitizenData() {
         console.log('[EXECUTED] saveCitizenData');
 
@@ -232,6 +248,8 @@
         }
     }
 
+    // Saves the data of zombies present on the map to localStorage.
+    // Each cell's coordinates and zombie count are stored by map ID.
     function saveZombieData() {
         console.log('[EXECUTED] saveZombieData');
 
@@ -266,6 +284,8 @@
         }
     }
 
+    // Applies a green background to cells containing citizens.
+    // The styling is dynamic and based on stored citizen data.
     function applyCitizenColors() {
         console.log('[EXECUTED] applyCitizenColors');
 
@@ -288,10 +308,11 @@
         });
     }
 
+    // Displays and organizes parameter options in a specific order.
+    // Enhances user interaction by adding visuals and tooltips.
     function displayParamTab() {
         const options = document.querySelectorAll('#optionDiverseCarte div');
         const container = document.querySelector('#optionDiverseCarte');
-
         const buttonOrder = [
             "param_danger",
             "param_ctrl",
@@ -310,7 +331,6 @@
             "param_zonage",
             "param_balisage"
         ];
-
         const buttonLabels = {
             param_danger: "Dangers",
             param_ctrl: "Contrôle",
@@ -329,16 +349,13 @@
             param_zonage: "Zonage",
             param_balisage: "Balisage"
         };
-
         buttonOrder.forEach(id => {
             const option = Array.from(options).find(opt => opt.querySelector(`input[type="checkbox"]#${id}`));
             if (option) {
                 const checkbox = option.querySelector('input[type="checkbox"]');
                 const label = option.querySelector('label');
-
                 if (checkbox && label && buttonLabels[id]) {
                     label.textContent = buttonLabels[id];
-
                     if (id === 'param_carteAlter') {
                         const infoBulle = label.querySelector('.infoBulle');
                         if (infoBulle) {
@@ -346,9 +363,7 @@
                         }
                     }
                 }
-
                 container.appendChild(option);
-
                 applyStyles(option, {
                     display: 'flex',
                     alignItems: 'center',
@@ -364,22 +379,18 @@
                     color: 'white',
                     transition: 'border-color 0.1s ease'
                 });
-
                 option.addEventListener('mouseenter', () => {
                     applyStyles(option, {
                         borderColor: '#f5f5dc'
                     });
                 });
-
                 option.addEventListener('mouseleave', () => {
                     applyStyles(option, {
                         borderColor: '#444'
                     });
                 });
-
                 if (checkbox) {
                     checkbox.style.display = 'none';
-
                     let icon = option.querySelector('.option-icon');
                     if (!icon) {
                         icon = document.createElement('span');
@@ -393,7 +404,6 @@
                         });
                         option.prepend(icon);
                     }
-
                     if (checkbox.checked) {
                         option.classList.add('checked');
                         option.classList.remove('unchecked');
@@ -407,7 +417,6 @@
                             backgroundImage: "url('https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/player_offline.gif')"
                         });
                     }
-
                     checkbox.addEventListener('change', () => {
                         if (checkbox.checked) {
                             option.classList.add('checked');
@@ -428,6 +437,8 @@
         });
     }
 
+    // Handles parameter changes triggered by user interaction.
+    // Executes the appropriate functions based on the toggled parameter.
     function handleParameterChange(event) {
         const paramId = event.target.id;
         console.log(`[EVENT] ${paramId} parameter toggled`);
@@ -435,6 +446,7 @@
         switch (paramId) {
             case 'param_danger':
                 removeDangerClass();
+                break;
             case 'param_citoyensVille':
                 manageCitizenCases();
                 invertCitizenDivs();
@@ -448,6 +460,23 @@
         }
     }
 
+    // Handles tab changes in the UI navigation menu.
+    // Executes actions when switching to a relevant tab like "Parameters".
+    function handleTabChange(selectedTab) {
+        const tabId = selectedTab.querySelector('i')?.id;
+        console.log(`[EVENT] Tab changed to ${tabId || selectedTab.textContent.trim()}`);
+
+        if (selectedTab.textContent.trim() === 'Paramètres') {
+            console.log('[EVENT] Parameters tab activated');
+            displayParamTab();
+            observeParameters();
+        } else {
+            console.log(`[EVENT] No specific action defined for tab: ${selectedTab.textContent.trim()}`);
+        }
+    }
+
+    // Observes changes in the parameters section of the UI.
+    // Dynamically attaches event listeners to track parameter state changes.
     function observeParameters() {
         console.log('[EXECUTED] observeParameters');
         const paramsContainer = document.querySelector('#optionDiverseCarte');
@@ -459,28 +488,24 @@
 
         function attachEventListeners() {
             const params = document.querySelectorAll('#param_danger, #param_citoyensVille, #param_zombie');
-            if (params.length === 0) {
-                console.log('[ERROR] No parameters found');
-            } else {
-                params.forEach(param => {
-                    param.removeEventListener('change', handleParameterChange);
-                    param.addEventListener('change', handleParameterChange);
-                    console.log(`[ATTACHED] Event listener attached to ${param.id}`);
-                });
-            }
+            params.forEach(param => {
+                param.removeEventListener('change', handleParameterChange);
+                param.addEventListener('change', handleParameterChange);
+                console.log(`[ATTACHED] Event listener attached to ${param.id}`);
+            });
         }
 
-        const paramsObserver = new MutationObserver((mutationsList) => {
-            //mutationsList.forEach((mutation) => {
-            //    console.log('[OBSERVED] Mutation detected in parameters:', mutation);
-            //});
-            console.log('[OBSERVED] Parameters visibility or structure changed');
+        const paramsObserver = new MutationObserver(() => {
+            console.log('[OBSERVED] Parameters structure or visibility changed');
             attachEventListeners();
         });
 
         paramsObserver.observe(paramsContainer, { childList: true, subtree: true });
+        attachEventListeners();
     }
 
+    // Observes the navigation tabs on the page.
+    // Triggers appropriate functions when the active tab changes.
     function observeTabs() {
         console.log('[EXECUTED] observeTabs');
         const tabsContainer = document.querySelector('#zoneInfoVilleAutre');
@@ -491,27 +516,31 @@
         }
 
         const tabObserver = new MutationObserver((mutationsList) => {
-            let shouldUpdate = false;
-
             mutationsList.forEach((mutation) => {
-                if (mutation.type === 'childList' || (mutation.type === 'attributes' && mutation.attributeName === 'class')) {
-                    shouldUpdate = true;
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const newSelectedTab = tabsContainer.querySelector('.boutonMenuCarte.selectedOngletCarte');
+                    if (newSelectedTab) {
+                        console.log(`[OBSERVED] Tab changed to: ${newSelectedTab.textContent.trim()}`);
+                        handleTabChange(newSelectedTab);
+                        if (newSelectedTab.textContent.trim() === 'Paramètres') {
+                            console.log('[ACTION] Reattaching parameter change listeners');
+                            observeParameters();
+                        }
+                    }
                 }
             });
-
-            if (shouldUpdate) {
-                console.log('[OBSERVED] Tab content or visibility changed');
-                tabObserver.disconnect();
-                displayParamTab();
-                tabObserver.observe(tabsContainer, { childList: true, attributes: true, subtree: true });
-            }
         });
 
-        tabObserver.observe(tabsContainer, { childList: true, attributes: true, subtree: true });
-        console.log('[STARTED] Observing tabs');
+        const tabs = tabsContainer.querySelectorAll('.boutonMenuCarte');
+        tabs.forEach(tab => {
+            tabObserver.observe(tab, { attributes: true });
+        });
+
+        console.log('[STARTED] Observing tabs for class changes');
     }
 
-
+    // Applies all necessary modifications to the map and UI elements.
+    // Ensures consistency and prepares the interface for user interaction.
     function applyModifications() {
         console.log('[EXECUTED] applyModifications');
         saveCitizenData();
@@ -526,7 +555,9 @@
         displayParamTab();
     }
 
-    function startObservingMap() {
+    // Observes the map during the page load to ensure required elements are loaded.
+    // Disconnects the observer after successfully detecting the map.
+    function init() {
         const observer = new MutationObserver(() => {
             if (document.querySelector('.background_carte_color')) {
                 addBackground();
@@ -538,5 +569,5 @@
         observer.observe(document.body, { childList: true, subtree: true });
     }
 
-    startObservingMap();
+    init();
 })();

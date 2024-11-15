@@ -4,6 +4,7 @@
 // @version      1.6
 // @description  Intégration d'un visuel BBHien à l'infâme GH.
 // @author       Eliam
+// @icon         https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_radius_mk2.gif
 // @match        https://gest-hordes2.eragaming.fr/carte/*
 // @grant        none
 // ==/UserScript==
